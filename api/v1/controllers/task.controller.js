@@ -96,6 +96,20 @@ module.exports.changeMulti = async (req,res)=>{
           message:"Change multi status successfully!"
         })
         break
+      
+      case "delete":
+        await Task.updateMany({
+          _id:{$in:ids}
+        },{
+          deleted:true,
+          deletedAt:new Date()
+        })
+        res.json({
+          code:200,
+          message:"Delete multi successfully!"
+        })
+
+        break
 
       default:
         res.json({

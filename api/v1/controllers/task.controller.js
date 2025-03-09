@@ -115,10 +115,29 @@ module.exports.changeMulti = async (req,res)=>{
 module.exports.create = async (req,res)=>{
   try{
     const task = new Task(req.body)
-    const data=task.save()
+    const data= await task.save()
     res.json({
       code:200,
       message:"Create new task successfully!",
+      data:data
+    })
+  }catch(error){
+      res.json({
+        code:400,
+        message:error
+      })
+  }
+}
+// [POST] /api/v1/tasks/edit/:id
+module.exports.edit = async (req,res)=>{
+  try{
+    const id = req.params.id
+    await Task.updateOne({
+      _id:id
+    },req.body)
+    res.json({
+      code:200,
+      message:"Edit task successfully!",
       data:data
     })
   }catch(error){

@@ -56,7 +56,7 @@ module.exports.detail = async (req, res) => {
   }
 };
 
-// [PATCH] /change-status/:id
+// [PATCH] /api/v1/tasks/change-status/:id
 
 module.exports.changeStatus =async (req,res)=>{
   try{
@@ -79,7 +79,7 @@ module.exports.changeStatus =async (req,res)=>{
     })
   }
 }
-
+// [PATCH] /api/v1/tasks/change-multi
 module.exports.changeMulti = async (req,res)=>{
   try{
     const {ids,key,value}=req.body
@@ -109,5 +109,22 @@ module.exports.changeMulti = async (req,res)=>{
       code:400,
       message:"Is not existence!"
     })
+  }
+}
+// [POST] /api/v1/tasks/create
+module.exports.create = async (req,res)=>{
+  try{
+    const task = new Task(req.body)
+    const data=task.save()
+    res.json({
+      code:200,
+      message:"Create new task successfully!",
+      data:data
+    })
+  }catch(error){
+      res.json({
+        code:400,
+        message:error
+      })
   }
 }

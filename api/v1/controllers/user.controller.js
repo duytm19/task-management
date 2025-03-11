@@ -25,7 +25,7 @@ module.exports.register = async (req,res)=>{
         })
 
         user.save()
-        const token =user.token
+        const token =user.tokenUser
         res.cookie("token",token)
         res.json({
             code:200,
@@ -136,9 +136,41 @@ module.exports.otpPassword =async(req,res)=>{
         email:email
     })
 
-    res.cookie("tokenUser", user.tokenUser)
+    res.cookie("token", user.tokenUser)
     res.json({
         code:200,
-        message:"Authenticate you OTP successfully"
+        message:"Authenticate your OTP successfully"
+    })
+}
+// [POST] /api/v1/users/password/reset
+module.exports.resetPassword = async (req,res) =>{
+    const password = req.body.password
+    const tokenUser = req.cookies.token
+
+    await User.updateOne({
+        tokenUser: tokenUser
+    },{
+        password: md5(password)
+    })
+
+    res.clearCookie("token")
+    res.json({
+        code:200,
+        message:"Reset password successfully"
+    })
+}
+// [GET] /api/v1/users/detail
+module.exports.detail = async (req,res) =>{
+    const tokenUser = req.cookies.token
+
+    const user = await User.findOne({
+        tokenUser:tokenUser,
+        deleted:false
+    }).select("-password -tokenUser")
+
+    res.json({
+        code:200,
+        message:"Successfully",
+        info:user
     })
 }

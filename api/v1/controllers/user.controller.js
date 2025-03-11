@@ -16,7 +16,7 @@ module.exports.register = async (req,res)=>{
         })
     }
     else{
-        const user = new User =({
+        const user = new User ({
             fullName: req.body.fullName,
             email: req.body.email,
             password: req.body.password
@@ -32,4 +32,38 @@ module.exports.register = async (req,res)=>{
         })
     }
 
+}
+
+// [GET] /api/v1/users/login
+module.exports.login = async(req,res)=>{
+    const email= req.body.email
+    const password = req.body.password
+
+    const user = await User.findOne({
+        email:email,
+        deleted:false
+    })
+
+    if(!user){
+        res.json({
+            code:400,
+            message:"Email is not existence"
+        })
+        return
+    }
+
+    if(md5(password)!== user.password){
+        res.json({
+            code:400,
+            message: "Password is incorrect!"
+        })
+        return
+    }
+    const token =user.token
+    res.cookie("token",token)
+    res.json({
+        code:200,
+        message:"Login successfully!",
+        token:token
+    })
 }

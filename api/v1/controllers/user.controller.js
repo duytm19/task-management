@@ -21,7 +21,8 @@ module.exports.register = async (req,res)=>{
         const user = new User ({
             fullName: req.body.fullName,
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
+            tokenUser: generateHelper.generateRandomString(30)
         })
 
         user.save()
@@ -161,12 +162,7 @@ module.exports.resetPassword = async (req,res) =>{
 }
 // [GET] /api/v1/users/detail
 module.exports.detail = async (req,res) =>{
-    const tokenUser = req.cookies.token
-
-    const user = await User.findOne({
-        tokenUser:tokenUser,
-        deleted:false
-    }).select("-password -tokenUser")
+    const user = req.user
 
     res.json({
         code:200,

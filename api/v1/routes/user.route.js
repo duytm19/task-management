@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-
+const authMiddleware = require("../middlewares/auth.middleware")
 const controller=require("../controllers/user.controller")
 
 router.post("/register",controller.register)
@@ -13,5 +13,5 @@ router.post("/password/otp",controller.otpPassword)
 
 router.post("/password/reset",controller.resetPassword)
 
-router.get("/detail",controller.detail)
+router.get("/detail",authMiddleware.requireAuth,controller.detail)
 module.exports=router
